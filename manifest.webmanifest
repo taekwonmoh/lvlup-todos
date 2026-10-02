@@ -1,13 +1,13 @@
 {
-  "name": "LVLUP To-Dos",
-  "short_name": "LVLUP Todos",
-  "description": "Business and LVLUP work items \u2014 stays on this device",
+  "name": "There's always Moh to do",
+  "short_name": "Moh to do",
+  "description": "Work and personal to-dos — stays on this device",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "background_color": "#1a1410",
-  "theme_color": "#1a1410",
+  "background_color": "#000000",
+  "theme_color": "#000000",
   "icons": [
     {
       "src": "./icon-192.png",

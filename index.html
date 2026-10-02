@@ -3,34 +3,35 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#1a1410" />
+  <meta name="theme-color" content="#000000" />
   <meta name="color-scheme" content="dark" />
-  <meta name="description" content="Business and LVLUP work items — stays on this device" />
+  <meta name="description" content="Work and personal to-dos — stays on this device" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="LVLUP Todos" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta name="apple-mobile-web-app-title" content="Moh to do" />
   <meta name="mobile-web-app-capable" content="yes" />
   <link rel="manifest" href="./manifest.json" />
   <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png" />
-  <title>LVLUP To-Dos</title>
+  <title>There's always Moh to do</title>
   <style>
     :root {
-      --bg: #1a1410;
-      --bg-elevated: #241c16;
-      --bg-input: #2c231c;
-      --surface: #2f251e;
-      --border: #3d3228;
-      --border-soft: #4a3d32;
-      --text: #f5ebe0;
-      --text-muted: #b8a99a;
-      --accent: #e85d04;
-      --accent-hover: #f48c06;
-      --accent-soft: rgba(232, 93, 4, 0.15);
-      --success: #2a9d8f;
-      --danger: #e63946;
-      --danger-soft: rgba(230, 57, 70, 0.12);
-      --shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+      --bg: #000000;
+      --bg-elevated: #0a0a0a;
+      --bg-input: #111111;
+      --surface: #141414;
+      --border: #2a2a2a;
+      --border-soft: #3a3a3a;
+      --text: #ffffff;
+      --text-muted: #a0a0a0;
+      --accent: #ffffff;
+      --accent-hover: #e8e8e8;
+      --accent-soft: rgba(255, 255, 255, 0.12);
+      --accent-on: #000000;
+      --success: #ffffff;
+      --danger: #ffffff;
+      --danger-soft: rgba(255, 255, 255, 0.08);
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
       --radius: 14px;
       --radius-sm: 10px;
       --font: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
@@ -55,11 +56,7 @@
 
     body {
       font-family: var(--font);
-      background:
-        radial-gradient(ellipse 120% 80% at 10% -20%, rgba(232, 93, 4, 0.18), transparent 50%),
-        radial-gradient(ellipse 80% 60% at 100% 0%, rgba(42, 157, 143, 0.12), transparent 45%),
-        var(--bg);
-      background-attachment: fixed;
+      background: var(--bg);
       color: var(--text);
       line-height: 1.45;
       -webkit-font-smoothing: antialiased;
@@ -92,9 +89,9 @@
       font-weight: 600;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: var(--accent);
-      background: var(--accent-soft);
-      border: 1px solid rgba(232, 93, 4, 0.35);
+      color: var(--text);
+      background: transparent;
+      border: 1px solid var(--border-soft);
       padding: 6px 12px;
       border-radius: 999px;
       margin-bottom: 10px;
@@ -102,7 +99,7 @@
     }
 
     h1 {
-      font-size: clamp(1.55rem, 6vw, 2.1rem);
+      font-size: clamp(1.35rem, 5.5vw, 1.85rem);
       font-weight: 700;
       letter-spacing: -0.02em;
       margin-bottom: 4px;
@@ -111,6 +108,45 @@
     .subtitle {
       color: var(--text-muted);
       font-size: 0.88rem;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 0;
+      margin-bottom: 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--bg-elevated);
+    }
+
+    .tab-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 700;
+      min-height: var(--tap);
+      padding: 12px 16px;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      letter-spacing: 0.02em;
+    }
+
+    .tab-btn + .tab-btn {
+      border-left: 1px solid var(--border);
+    }
+
+    .tab-btn:hover {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .tab-btn.active {
+      background: var(--accent);
+      color: var(--accent-on);
     }
 
     .card {
@@ -175,7 +211,7 @@
 
     .filter-btn.active {
       background: var(--accent);
-      color: #1a1008;
+      color: var(--accent-on);
     }
 
     .list {
@@ -227,9 +263,9 @@
     }
 
     .todo.done .check {
-      background: var(--success);
-      border-color: var(--success);
-      color: #fff;
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--accent-on);
     }
 
     .check svg {
@@ -295,14 +331,15 @@
 
     .icon-btn:hover,
     .icon-btn:focus-visible {
-      background: rgba(255, 255, 255, 0.06);
+      background: rgba(255, 255, 255, 0.08);
       color: var(--text);
     }
 
     .icon-btn.delete:hover,
     .icon-btn.delete:focus-visible {
       background: var(--danger-soft);
-      color: var(--danger);
+      color: var(--text);
+      outline: 1px solid var(--border-soft);
     }
 
     .icon-btn svg {
@@ -344,10 +381,11 @@
 
     .btn-primary {
       background: var(--accent);
-      color: #1a1008;
+      color: var(--accent-on);
       padding: 0 20px;
       flex-shrink: 0;
       min-width: 72px;
+      border: 1px solid var(--accent);
     }
 
     .btn-primary:hover {
@@ -360,19 +398,21 @@
       padding: 8px 12px;
       font-size: 0.8rem;
       min-height: 40px;
+      border: 1px solid transparent;
     }
 
     .btn-ghost:hover {
       color: var(--text);
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(255, 255, 255, 0.06);
+      border-color: var(--border);
     }
 
     .btn-danger-ghost:hover {
-      color: var(--danger);
+      color: var(--text);
       background: var(--danger-soft);
+      border-color: var(--border-soft);
     }
 
-    /* Sticky bottom add bar — thumb reach */
     .add-bar {
       position: fixed;
       left: 0;
@@ -384,7 +424,7 @@
         calc(12px + var(--safe-right))
         calc(10px + var(--safe-bottom))
         calc(12px + var(--safe-left));
-      background: linear-gradient(180deg, rgba(26, 20, 16, 0.72) 0%, var(--bg) 35%);
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0.72) 0%, var(--bg) 35%);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
       border-top: 1px solid var(--border);
@@ -405,7 +445,7 @@
       border: 1px solid var(--border-soft);
       border-radius: var(--radius-sm);
       color: var(--text);
-      font-size: 16px; /* avoids iOS zoom on focus */
+      font-size: 16px;
       padding: 12px 14px;
       outline: none;
       min-height: var(--tap);
@@ -437,10 +477,15 @@
 <body>
   <div class="app">
     <header>
-      <div class="badge">LVLUP Martial Arts</div>
-      <h1>LVLUP To-Dos</h1>
-      <p class="subtitle">Business &amp; work items — stays on this device</p>
+      <div class="badge">To-Do</div>
+      <h1>There's always Moh to do</h1>
+      <p class="subtitle">Work &amp; personal — stays on this device</p>
     </header>
+
+    <div class="tabs" role="tablist" aria-label="Lists">
+      <button type="button" class="tab-btn active" role="tab" aria-selected="true" data-tab="work" id="tabWork">Work</button>
+      <button type="button" class="tab-btn" role="tab" aria-selected="false" data-tab="personal" id="tabPersonal">Personal</button>
+    </div>
 
     <div class="card">
       <div class="toolbar">
@@ -463,17 +508,18 @@
 
   <form class="add-bar" id="addForm" autocomplete="off">
     <div class="add-bar-inner">
-      <input type="text" id="newTodo" placeholder="Add a new task…" maxlength="500" aria-label="New task" enterkeyhint="done" />
+      <input type="text" id="newTodo" placeholder="Add to Work…" maxlength="500" aria-label="New task" enterkeyhint="done" />
       <button type="submit" class="btn btn-primary">Add</button>
     </div>
   </form>
 
   <script>
     (function () {
-      const STORAGE_KEY = "lvlup-todos-v1";
+      const STORAGE_V2 = "moh-todos-v2";
+      const STORAGE_V1 = "lvlup-todos-v1";
       const EDDIE = "Post Eddie Cha photo and tease update to black belt curriculum";
 
-      const SEED = [
+      const SEED_WORK = [
         "Invite parents to start week of October 19th",
         "Silver Kickers — 40+ workout and mixer",
         "2 more designs for shirts and hoodies in time for holiday sale",
@@ -483,7 +529,8 @@
         EDDIE
       ];
 
-      let todos = [];
+      let lists = { work: [], personal: [] };
+      let activeTab = "work";
       let filter = "all";
       let editingId = null;
 
@@ -497,6 +544,14 @@
         return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
       }
 
+      function todos() {
+        return lists[activeTab] || [];
+      }
+
+      function setTodos(next) {
+        lists[activeTab] = next;
+      }
+
       function ensureEddie(list) {
         var has = list.some(function (t) {
           return t && typeof t.text === "string" && t.text.indexOf("Eddie Cha") !== -1;
@@ -508,36 +563,71 @@
         return false;
       }
 
+      function migrateFromV1() {
+        try {
+          var raw = localStorage.getItem(STORAGE_V1);
+          if (raw === null) return null;
+          var arr = JSON.parse(raw);
+          if (!Array.isArray(arr)) return null;
+          return arr;
+        } catch (e) {
+          return null;
+        }
+      }
+
       function load() {
         try {
-          const raw = localStorage.getItem(STORAGE_KEY);
-          if (raw === null) {
-            todos = SEED.map(function (text) {
-              return { id: uid(), text: text, done: false, createdAt: Date.now() };
-            });
+          var raw = localStorage.getItem(STORAGE_V2);
+          if (raw !== null) {
+            var parsed = JSON.parse(raw);
+            lists = {
+              work: Array.isArray(parsed && parsed.work) ? parsed.work : [],
+              personal: Array.isArray(parsed && parsed.personal) ? parsed.personal : []
+            };
+            if (parsed && (parsed.activeTab === "work" || parsed.activeTab === "personal")) {
+              activeTab = parsed.activeTab;
+            }
+            if (ensureEddie(lists.work)) save();
+            return;
+          }
+
+          var legacy = migrateFromV1();
+          if (legacy) {
+            lists = { work: legacy, personal: [] };
+            ensureEddie(lists.work);
             save();
             return;
           }
-          todos = JSON.parse(raw);
-          if (!Array.isArray(todos)) todos = [];
-          if (ensureEddie(todos)) save();
+
+          lists = {
+            work: SEED_WORK.map(function (text) {
+              return { id: uid(), text: text, done: false, createdAt: Date.now() };
+            }),
+            personal: []
+          };
+          save();
         } catch (e) {
-          todos = [];
+          lists = { work: [], personal: [] };
         }
       }
 
       function save() {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(todos));
+        localStorage.setItem(STORAGE_V2, JSON.stringify({
+          work: lists.work,
+          personal: lists.personal,
+          activeTab: activeTab
+        }));
       }
 
       function openCount() {
-        return todos.filter(function (t) { return !t.done; }).length;
+        return todos().filter(function (t) { return !t.done; }).length;
       }
 
       function visibleTodos() {
-        if (filter === "open") return todos.filter(function (t) { return !t.done; });
-        if (filter === "done") return todos.filter(function (t) { return t.done; });
-        return todos.slice();
+        var all = todos();
+        if (filter === "open") return all.filter(function (t) { return !t.done; });
+        if (filter === "done") return all.filter(function (t) { return t.done; });
+        return all.slice();
       }
 
       function escapeHtml(str) {
@@ -548,16 +638,39 @@
           .replace(/"/g, "&quot;");
       }
 
+      function updateTabUI() {
+        document.querySelectorAll(".tab-btn").forEach(function (btn) {
+          var on = btn.getAttribute("data-tab") === activeTab;
+          btn.classList.toggle("active", on);
+          btn.setAttribute("aria-selected", on ? "true" : "false");
+        });
+        var label = activeTab === "work" ? "Work" : "Personal";
+        newTodoInput.placeholder = "Add to " + label + "…";
+      }
+
+      function setTab(tab) {
+        if (tab !== "work" && tab !== "personal") return;
+        if (activeTab === tab) return;
+        editingId = null;
+        activeTab = tab;
+        save();
+        updateTabUI();
+        render();
+      }
+
       function render() {
         openCountEl.textContent = String(openCount());
-        const items = visibleTodos();
+        var items = visibleTodos();
+        var tabLabel = activeTab === "work" ? "Work" : "Personal";
 
         if (items.length === 0) {
           var msg = filter === "done"
-            ? "No completed tasks yet."
+            ? "No completed " + tabLabel.toLowerCase() + " tasks yet."
             : filter === "open"
-              ? "All clear — nothing open."
-              : "No tasks yet. Add one below.";
+              ? "All clear — nothing open in " + tabLabel + "."
+              : tabLabel === "Personal"
+                ? "No personal tasks yet. Add one below."
+                : "No work tasks yet. Add one below.";
           listEl.innerHTML = '<li class="empty">' + msg + "</li>";
           return;
         }
@@ -598,13 +711,15 @@
       function addTodo(text) {
         var trimmed = text.trim();
         if (!trimmed) return;
-        todos.unshift({ id: uid(), text: trimmed, done: false, createdAt: Date.now() });
+        var next = todos().slice();
+        next.unshift({ id: uid(), text: trimmed, done: false, createdAt: Date.now() });
+        setTodos(next);
         save();
         render();
       }
 
       function toggleTodo(id) {
-        var t = todos.find(function (x) { return x.id === id; });
+        var t = todos().find(function (x) { return x.id === id; });
         if (!t) return;
         t.done = !t.done;
         save();
@@ -612,7 +727,7 @@
       }
 
       function deleteTodo(id) {
-        todos = todos.filter(function (x) { return x.id !== id; });
+        setTodos(todos().filter(function (x) { return x.id !== id; }));
         if (editingId === id) editingId = null;
         save();
         render();
@@ -624,7 +739,7 @@
       }
 
       function commitEdit(id, value) {
-        var t = todos.find(function (x) { return x.id === id; });
+        var t = todos().find(function (x) { return x.id === id; });
         editingId = null;
         if (!t) { render(); return; }
         var trimmed = value.trim();
@@ -638,9 +753,9 @@
       }
 
       function clearCompleted() {
-        var before = todos.length;
-        todos = todos.filter(function (t) { return !t.done; });
-        if (todos.length === before) return;
+        var before = todos().length;
+        setTodos(todos().filter(function (t) { return !t.done; }));
+        if (todos().length === before) return;
         save();
         render();
       }
@@ -653,6 +768,12 @@
       });
 
       clearBtn.addEventListener("click", clearCompleted);
+
+      document.querySelectorAll(".tab-btn").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          setTab(btn.getAttribute("data-tab"));
+        });
+      });
 
       document.querySelectorAll(".filter-btn").forEach(function (btn) {
         btn.addEventListener("click", function () {
@@ -705,6 +826,7 @@
       });
 
       load();
+      updateTabUI();
       render();
 
       if ("serviceWorker" in navigator) {

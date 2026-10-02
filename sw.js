@@ -1,5 +1,5 @@
-/* LVLUP To-Dos — offline cache */
-const CACHE = "lvlup-todos-ghpages-v1";
+/* There's always Moh to do — offline cache */
+const CACHE = "moh-todos-ghpages-v2";
 const ASSETS = [
   "./",
   "./index.html",
