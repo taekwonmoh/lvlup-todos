@@ -1,0 +1,5 @@
+Primary live URL: https://taekwonmoh.github.io/lvlup-todos/
+Source: https://github.com/taekwonmoh/lvlup-todos
+GitHub Pages: branch main, folder / (root)
+iPhone: open URL in Safari → Share → Add to Home Screen.
+Android: browser menu → Install / Add to Home screen.
