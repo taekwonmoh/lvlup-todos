@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#000000" />
   <meta name="color-scheme" content="dark" />
-  <meta name="description" content="Work and personal to-dos — stays on this device" />
+  <meta name="description" content="Work and personal to-dos — There's always Moh to do" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   <meta name="apple-mobile-web-app-title" content="Moh to do" />
@@ -28,8 +28,6 @@
       --accent-hover: #e8e8e8;
       --accent-soft: rgba(255, 255, 255, 0.12);
       --accent-on: #000000;
-      --success: #ffffff;
-      --danger: #ffffff;
       --danger-soft: rgba(255, 255, 255, 0.08);
       --shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
       --radius: 14px;
@@ -43,17 +41,8 @@
       --add-bar-h: calc(72px + var(--safe-bottom));
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    html, body {
-      height: 100%;
-    }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    html, body { height: 100%; }
     body {
       font-family: var(--font);
       background: var(--bg);
@@ -68,410 +57,152 @@
       min-height: 100dvh;
       overscroll-behavior-y: contain;
     }
-
-    .app {
-      max-width: 560px;
-      margin: 0 auto;
-      width: 100%;
-    }
-
-    header {
-      text-align: center;
-      margin-bottom: 16px;
-      padding: 4px 4px 0;
-    }
-
+    .app { max-width: 560px; margin: 0 auto; width: 100%; }
+    header { text-align: center; margin-bottom: 16px; padding: 4px 4px 0; }
     .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.68rem;
-      font-weight: 600;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--text);
-      background: transparent;
-      border: 1px solid var(--border-soft);
-      padding: 6px 12px;
-      border-radius: 999px;
-      margin-bottom: 10px;
-      min-height: 28px;
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 0.68rem; font-weight: 600; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--text);
+      background: transparent; border: 1px solid var(--border-soft);
+      padding: 6px 12px; border-radius: 999px; margin-bottom: 10px; min-height: 28px;
     }
-
     h1 {
       font-size: clamp(1.35rem, 5.5vw, 1.85rem);
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      margin-bottom: 4px;
+      font-weight: 700; letter-spacing: -0.02em; margin-bottom: 4px;
     }
-
-    .subtitle {
-      color: var(--text-muted);
-      font-size: 0.88rem;
-    }
-
+    .subtitle { color: var(--text-muted); font-size: 0.88rem; }
+    .sync-line { margin-top: 6px; font-size: 0.75rem; color: var(--text-muted); min-height: 1.1em; }
     .tabs {
-      display: flex;
-      gap: 0;
-      margin-bottom: 12px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-      background: var(--bg-elevated);
+      display: flex; gap: 0; margin-bottom: 12px;
+      border: 1px solid var(--border); border-radius: var(--radius);
+      overflow: hidden; background: var(--bg-elevated);
     }
-
     .tab-btn {
-      flex: 1;
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
-      font-family: inherit;
-      font-size: 0.95rem;
-      font-weight: 700;
-      min-height: var(--tap);
-      padding: 12px 16px;
-      cursor: pointer;
-      transition: background 0.15s, color 0.15s;
+      flex: 1; background: transparent; border: none; color: var(--text-muted);
+      font-family: inherit; font-size: 0.95rem; font-weight: 700;
+      min-height: var(--tap); padding: 12px 16px; cursor: pointer;
       letter-spacing: 0.02em;
     }
-
-    .tab-btn + .tab-btn {
-      border-left: 1px solid var(--border);
-    }
-
-    .tab-btn:hover {
-      color: var(--text);
-      background: rgba(255, 255, 255, 0.04);
-    }
-
-    .tab-btn.active {
-      background: var(--accent);
-      color: var(--accent-on);
-    }
-
+    .tab-btn + .tab-btn { border-left: 1px solid var(--border); }
+    .tab-btn:hover { color: var(--text); background: rgba(255, 255, 255, 0.04); }
+    .tab-btn.active { background: var(--accent); color: var(--accent-on); }
     .card {
-      background: var(--bg-elevated);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      overflow: hidden;
+      background: var(--bg-elevated); border: 1px solid var(--border);
+      border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden;
     }
-
     .toolbar {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      padding: 12px 14px;
-      border-bottom: 1px solid var(--border);
-      background: var(--surface);
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+      gap: 10px; padding: 12px 14px; border-bottom: 1px solid var(--border); background: var(--surface);
     }
-
-    .count {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-    }
-
-    .count strong {
-      color: var(--text);
-      font-weight: 600;
-    }
-
+    .count { font-size: 0.85rem; color: var(--text-muted); }
+    .count strong { color: var(--text); font-weight: 600; }
     .filters {
-      display: flex;
-      gap: 4px;
-      background: var(--bg);
-      padding: 4px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      width: 100%;
-      max-width: 280px;
-      margin-left: auto;
+      display: flex; gap: 4px; background: var(--bg); padding: 4px;
+      border-radius: 12px; border: 1px solid var(--border);
+      width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch;
     }
-
     .filter-btn {
-      flex: 1;
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
-      font-family: inherit;
-      font-size: 0.85rem;
-      font-weight: 600;
-      min-height: var(--tap);
-      padding: 8px 10px;
-      border-radius: 999px;
-      cursor: pointer;
-      transition: background 0.15s, color 0.15s;
+      flex: 0 0 auto; background: transparent; border: none; color: var(--text-muted);
+      font-family: inherit; font-size: 0.78rem; font-weight: 600;
+      min-height: 40px; padding: 8px 12px; border-radius: 999px; cursor: pointer;
+      white-space: nowrap;
     }
-
-    .filter-btn:hover {
-      color: var(--text);
-    }
-
-    .filter-btn.active {
-      background: var(--accent);
-      color: var(--accent-on);
-    }
-
-    .list {
-      list-style: none;
-      min-height: 140px;
-    }
-
-    .empty {
-      padding: 48px 24px;
-      text-align: center;
-      color: var(--text-muted);
-      font-size: 0.95rem;
-    }
-
+    .filter-btn:hover { color: var(--text); }
+    .filter-btn.active { background: var(--accent); color: var(--accent-on); }
+    .list { list-style: none; min-height: 140px; }
+    .empty { padding: 48px 24px; text-align: center; color: var(--text-muted); font-size: 0.95rem; }
     .todo {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      padding: 12px 12px;
-      border-bottom: 1px solid var(--border);
+      display: flex; align-items: flex-start; gap: 8px;
+      padding: 12px 12px; border-bottom: 1px solid var(--border);
       animation: fadeIn 0.2s ease;
     }
-
-    .todo:last-child {
-      border-bottom: none;
-    }
-
+    .todo:last-child { border-bottom: none; }
+    .todo.needs_input { box-shadow: inset 3px 0 0 #ffffff; }
+    .todo.in_progress { box-shadow: inset 3px 0 0 #666666; }
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(4px); }
       to { opacity: 1; transform: translateY(0); }
     }
-
     .check {
-      flex-shrink: 0;
-      width: var(--tap);
-      height: var(--tap);
-      border: 2px solid var(--border-soft);
-      border-radius: 10px;
-      background: transparent;
-      cursor: pointer;
-      display: grid;
-      place-items: center;
-      transition: border-color 0.15s, background 0.15s;
-      color: transparent;
+      flex-shrink: 0; width: var(--tap); height: var(--tap);
+      border: 2px solid var(--border-soft); border-radius: 10px;
+      background: transparent; cursor: pointer; display: grid; place-items: center;
+      color: transparent; margin-top: 2px;
     }
-
-    .check:hover {
-      border-color: var(--accent);
+    .check:hover { border-color: var(--accent); }
+    .todo.completed .check { background: var(--accent); border-color: var(--accent); color: var(--accent-on); }
+    .todo.in_progress .check { color: var(--text); border-color: var(--text); }
+    .todo.needs_input .check { color: var(--text); border-style: dashed; }
+    .check svg { width: 18px; height: 18px; }
+    .todo-body { flex: 1; min-width: 0; padding-top: 8px; }
+    .todo-text { font-size: 1rem; word-wrap: break-word; cursor: text; padding: 2px 0; min-height: 24px; }
+    .todo.completed .todo-text { text-decoration: line-through; color: var(--text-muted); }
+    .todo-notes {
+      margin-top: 4px; font-size: 0.8rem; color: var(--text-muted); white-space: pre-wrap; word-wrap: break-word;
     }
-
-    .todo.done .check {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: var(--accent-on);
+    .todo-edit, .todo-notes-edit {
+      width: 100%; background: var(--bg-input); border: 1px solid var(--accent);
+      border-radius: 8px; color: var(--text); font-family: inherit; font-size: 1rem;
+      padding: 10px 12px; outline: none; box-shadow: 0 0 0 3px var(--accent-soft); min-height: var(--tap);
     }
-
-    .check svg {
-      width: 18px;
-      height: 18px;
+    .todo-notes-edit { margin-top: 8px; font-size: 0.85rem; min-height: 64px; resize: vertical; box-shadow: none; }
+    .todo-side { display: flex; flex-direction: column; align-items: stretch; gap: 4px; flex-shrink: 0; }
+    .status-select {
+      appearance: none; -webkit-appearance: none;
+      background: var(--bg-input) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path fill='white' d='M1 1l5 5 5-5'/></svg>") no-repeat right 8px center;
+      color: var(--text); border: 1px solid var(--border-soft); border-radius: 8px;
+      font-family: inherit; font-size: 0.72rem; font-weight: 600;
+      padding: 8px 22px 8px 8px; min-height: 36px; max-width: 124px; cursor: pointer;
     }
-
-    .todo-body {
-      flex: 1;
-      min-width: 0;
-      padding-top: 10px;
-    }
-
-    .todo-text {
-      font-size: 1rem;
-      word-wrap: break-word;
-      cursor: text;
-      padding: 2px 0;
-      border-radius: 4px;
-      min-height: 24px;
-    }
-
-    .todo.done .todo-text {
-      text-decoration: line-through;
-      color: var(--text-muted);
-      opacity: 0.75;
-    }
-
-    .todo-edit {
-      width: 100%;
-      background: var(--bg-input);
-      border: 1px solid var(--accent);
-      border-radius: 8px;
-      color: var(--text);
-      font-family: inherit;
-      font-size: 1rem;
-      padding: 10px 12px;
-      outline: none;
-      box-shadow: 0 0 0 3px var(--accent-soft);
-      min-height: var(--tap);
-    }
-
-    .actions {
-      display: flex;
-      gap: 2px;
-      flex-shrink: 0;
-      opacity: 1;
-      padding-top: 2px;
-    }
-
+    .status-select:focus { outline: none; border-color: var(--accent); }
+    .actions { display: flex; gap: 0; }
     .icon-btn {
-      width: var(--tap);
-      height: var(--tap);
-      border: none;
-      border-radius: 10px;
-      background: transparent;
-      color: var(--text-muted);
-      cursor: pointer;
-      display: grid;
-      place-items: center;
-      transition: background 0.15s, color 0.15s;
+      width: 40px; height: 40px; border: none; border-radius: 10px;
+      background: transparent; color: var(--text-muted); cursor: pointer;
+      display: grid; place-items: center;
     }
-
-    .icon-btn:hover,
-    .icon-btn:focus-visible {
-      background: rgba(255, 255, 255, 0.08);
-      color: var(--text);
+    .icon-btn:hover, .icon-btn:focus-visible { background: rgba(255, 255, 255, 0.08); color: var(--text); }
+    .icon-btn.delete:hover, .icon-btn.delete:focus-visible {
+      background: var(--danger-soft); color: var(--text); outline: 1px solid var(--border-soft);
     }
-
-    .icon-btn.delete:hover,
-    .icon-btn.delete:focus-visible {
-      background: var(--danger-soft);
-      color: var(--text);
-      outline: 1px solid var(--border-soft);
-    }
-
-    .icon-btn svg {
-      width: 18px;
-      height: 18px;
-    }
-
+    .icon-btn svg { width: 18px; height: 18px; }
     footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 12px;
-      border-top: 1px solid var(--border);
-      background: var(--surface);
+      display: flex; justify-content: space-between; align-items: center; gap: 8px;
+      padding: 10px 12px; border-top: 1px solid var(--border); background: var(--surface); flex-wrap: wrap;
     }
-
-    .footer-hint {
-      font-size: 0.72rem;
-      color: var(--text-muted);
-      line-height: 1.3;
-    }
-
+    .footer-hint { font-size: 0.72rem; color: var(--text-muted); line-height: 1.3; flex: 1; min-width: 140px; }
+    .footer-actions { display: flex; gap: 4px; flex-wrap: wrap; }
     .btn {
-      border: none;
-      border-radius: var(--radius-sm);
-      font-family: inherit;
-      font-size: 0.95rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.15s, transform 0.1s, opacity 0.15s;
-      white-space: nowrap;
-      min-height: var(--tap);
+      border: none; border-radius: var(--radius-sm); font-family: inherit;
+      font-size: 0.95rem; font-weight: 600; cursor: pointer; white-space: nowrap; min-height: var(--tap);
     }
-
-    .btn:active {
-      transform: scale(0.97);
-    }
-
+    .btn:active { transform: scale(0.97); }
     .btn-primary {
-      background: var(--accent);
-      color: var(--accent-on);
-      padding: 0 20px;
-      flex-shrink: 0;
-      min-width: 72px;
-      border: 1px solid var(--accent);
+      background: var(--accent); color: var(--accent-on); padding: 0 20px;
+      flex-shrink: 0; min-width: 72px; border: 1px solid var(--accent);
     }
-
-    .btn-primary:hover {
-      background: var(--accent-hover);
-    }
-
+    .btn-primary:hover { background: var(--accent-hover); }
     .btn-ghost {
-      background: transparent;
-      color: var(--text-muted);
-      padding: 8px 12px;
-      font-size: 0.8rem;
-      min-height: 40px;
-      border: 1px solid transparent;
+      background: transparent; color: var(--text-muted); padding: 8px 10px;
+      font-size: 0.78rem; min-height: 40px; border: 1px solid transparent; border-radius: var(--radius-sm);
+      font-family: inherit; font-weight: 600; cursor: pointer;
     }
-
-    .btn-ghost:hover {
-      color: var(--text);
-      background: rgba(255, 255, 255, 0.06);
-      border-color: var(--border);
-    }
-
-    .btn-danger-ghost:hover {
-      color: var(--text);
-      background: var(--danger-soft);
-      border-color: var(--border-soft);
-    }
-
+    .btn-ghost:hover { color: var(--text); background: rgba(255, 255, 255, 0.06); border-color: var(--border); }
     .add-bar {
-      position: fixed;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      z-index: 40;
-      padding:
-        10px
-        calc(12px + var(--safe-right))
-        calc(10px + var(--safe-bottom))
-        calc(12px + var(--safe-left));
+      position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
+      padding: 10px calc(12px + var(--safe-right)) calc(10px + var(--safe-bottom)) calc(12px + var(--safe-left));
       background: linear-gradient(180deg, rgba(0, 0, 0, 0.72) 0%, var(--bg) 35%);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
       border-top: 1px solid var(--border);
     }
-
-    .add-bar-inner {
-      max-width: 560px;
-      margin: 0 auto;
-      display: flex;
-      gap: 10px;
-      align-items: stretch;
-    }
-
+    .add-bar-inner { max-width: 560px; margin: 0 auto; display: flex; gap: 10px; align-items: stretch; }
     .add-bar input {
-      flex: 1;
-      min-width: 0;
-      background: var(--bg-input);
-      border: 1px solid var(--border-soft);
-      border-radius: var(--radius-sm);
-      color: var(--text);
-      font-size: 16px;
-      padding: 12px 14px;
-      outline: none;
-      min-height: var(--tap);
-      transition: border-color 0.15s, box-shadow 0.15s;
+      flex: 1; min-width: 0; background: var(--bg-input); border: 1px solid var(--border-soft);
+      border-radius: var(--radius-sm); color: var(--text); font-size: 16px;
+      padding: 12px 14px; outline: none; min-height: var(--tap);
     }
-
-    .add-bar input::placeholder {
-      color: var(--text-muted);
-      opacity: 0.7;
-    }
-
-    .add-bar input:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px var(--accent-soft);
-    }
-
-    @media (min-width: 480px) {
-      .filters {
-        width: auto;
-        margin-left: 0;
-      }
-
-      .toolbar {
-        flex-wrap: nowrap;
-      }
-    }
+    .add-bar input::placeholder { color: var(--text-muted); opacity: 0.7; }
+    .add-bar input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
   </style>
 </head>
 <body>
@@ -479,7 +210,8 @@
     <header>
       <div class="badge">To-Do</div>
       <h1>There's always Moh to do</h1>
-      <p class="subtitle">Work &amp; personal — stays on this device</p>
+      <p class="subtitle">Work &amp; personal</p>
+      <p class="sync-line" id="syncLine" aria-live="polite">Loading shared list…</p>
     </header>
 
     <div class="tabs" role="tablist" aria-label="Lists">
@@ -490,18 +222,23 @@
     <div class="card">
       <div class="toolbar">
         <p class="count"><strong id="openCount">0</strong> open</p>
-        <div class="filters" role="tablist" aria-label="Filter tasks">
+        <div class="filters" role="tablist" aria-label="Filter by status">
           <button type="button" class="filter-btn active" data-filter="all">All</button>
-          <button type="button" class="filter-btn" data-filter="open">Open</button>
-          <button type="button" class="filter-btn" data-filter="done">Done</button>
+          <button type="button" class="filter-btn" data-filter="not_started">Not started</button>
+          <button type="button" class="filter-btn" data-filter="in_progress">In progress</button>
+          <button type="button" class="filter-btn" data-filter="needs_input">Needs input</button>
+          <button type="button" class="filter-btn" data-filter="completed">Completed</button>
         </div>
       </div>
 
       <ul class="list" id="todoList" aria-live="polite"></ul>
 
       <footer>
-        <span class="footer-hint">Tap text to edit · saved locally · works offline</span>
-        <button type="button" class="btn btn-ghost btn-danger-ghost" id="clearCompleted">Clear completed</button>
+        <span class="footer-hint">Tap text to edit. Status is per task. Shared list merges on open.</span>
+        <div class="footer-actions">
+          <button type="button" class="btn btn-ghost" id="copyJson">Copy JSON</button>
+          <button type="button" class="btn btn-ghost" id="clearCompleted">Clear completed</button>
+        </div>
       </footer>
     </div>
   </div>
@@ -515,118 +252,248 @@
 
   <script>
     (function () {
-      const STORAGE_V2 = "moh-todos-v2";
-      const STORAGE_V1 = "lvlup-todos-v1";
-      const EDDIE = "Post Eddie Cha photo and tease update to black belt curriculum";
+      var STORAGE_V3 = "moh-todos-v3";
+      var STORAGE_V2 = "moh-todos-v2";
+      var STORAGE_V1 = "lvlup-todos-v1";
+      var STATUSES = ["not_started", "in_progress", "needs_input", "completed"];
+      var STATUS_LABEL = {
+        not_started: "Not started",
+        in_progress: "In progress",
+        needs_input: "Needs input",
+        completed: "Completed"
+      };
 
-      const SEED_WORK = [
-        "Invite parents to start week of October 19th",
-        "Silver Kickers — 40+ workout and mixer",
-        "2 more designs for shirts and hoodies in time for holiday sale",
-        "Make each level of certification last one cycle — may need intermediary levels between the 3 collars",
-        "Order LVLUP branded pens",
-        "Booths — donate $20 and we will give you a free uniform and a month as a thank you",
-        EDDIE
-      ];
+      var state = { todos: [], tombstones: {}, activeTab: "work" };
+      var filter = "all";
+      var editingId = null;
 
-      let lists = { work: [], personal: [] };
-      let activeTab = "work";
-      let filter = "all";
-      let editingId = null;
-
-      const listEl = document.getElementById("todoList");
-      const openCountEl = document.getElementById("openCount");
-      const addForm = document.getElementById("addForm");
-      const newTodoInput = document.getElementById("newTodo");
-      const clearBtn = document.getElementById("clearCompleted");
+      var listEl = document.getElementById("todoList");
+      var openCountEl = document.getElementById("openCount");
+      var addForm = document.getElementById("addForm");
+      var newTodoInput = document.getElementById("newTodo");
+      var clearBtn = document.getElementById("clearCompleted");
+      var copyBtn = document.getElementById("copyJson");
+      var syncLine = document.getElementById("syncLine");
 
       function uid() {
         return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
       }
 
-      function todos() {
-        return lists[activeTab] || [];
+      function nowIso() {
+        return new Date().toISOString();
       }
 
-      function setTodos(next) {
-        lists[activeTab] = next;
+      function parseTime(iso) {
+        var n = Date.parse(iso || "");
+        return isNaN(n) ? 0 : n;
       }
 
-      function ensureEddie(list) {
-        var has = list.some(function (t) {
-          return t && typeof t.text === "string" && t.text.indexOf("Eddie Cha") !== -1;
-        });
-        if (!has) {
-          list.push({ id: uid(), text: EDDIE, done: false, createdAt: Date.now() });
-          return true;
+      function normText(s) {
+        return String(s || "").trim().toLowerCase().replace(/\s+/g, " ");
+      }
+
+      function isList(v) {
+        return v === "work" || v === "personal";
+      }
+
+      function statusOf(raw) {
+        if (raw && STATUSES.indexOf(raw.status) !== -1) return raw.status;
+        if (raw && raw.done === true) return "completed";
+        return "not_started";
+      }
+
+      function normalizeTodo(raw, fallbackList) {
+        if (!raw || typeof raw !== "object") return null;
+        var text = typeof raw.text === "string" ? raw.text.trim() : "";
+        if (!text) return null;
+        var list = isList(raw.list) ? raw.list : (isList(fallbackList) ? fallbackList : "work");
+        var updatedAt = typeof raw.updatedAt === "string" && parseTime(raw.updatedAt)
+          ? new Date(parseTime(raw.updatedAt)).toISOString()
+          : (typeof raw.createdAt === "number" ? new Date(raw.createdAt).toISOString() : nowIso());
+        var notes = typeof raw.notes === "string" ? raw.notes : "";
+        var id = typeof raw.id === "string" && raw.id ? raw.id : uid();
+        return {
+          id: id,
+          text: text,
+          list: list,
+          status: statusOf(raw),
+          updatedAt: updatedAt,
+          notes: notes
+        };
+      }
+
+      function todosInTab() {
+        return state.todos.filter(function (t) { return t.list === state.activeTab; });
+      }
+
+      function findIndex(id) {
+        for (var i = 0; i < state.todos.length; i++) {
+          if (state.todos[i].id === id) return i;
         }
-        return false;
+        return -1;
       }
 
-      function migrateFromV1() {
+      function save() {
+        localStorage.setItem(STORAGE_V3, JSON.stringify({
+          todos: state.todos,
+          tombstones: state.tombstones,
+          activeTab: state.activeTab
+        }));
+      }
+
+      function readJson(key) {
         try {
-          var raw = localStorage.getItem(STORAGE_V1);
+          var raw = localStorage.getItem(key);
           if (raw === null) return null;
-          var arr = JSON.parse(raw);
-          if (!Array.isArray(arr)) return null;
-          return arr;
+          return JSON.parse(raw);
         } catch (e) {
           return null;
         }
       }
 
-      function load() {
-        try {
-          var raw = localStorage.getItem(STORAGE_V2);
-          if (raw !== null) {
-            var parsed = JSON.parse(raw);
-            lists = {
-              work: Array.isArray(parsed && parsed.work) ? parsed.work : [],
-              personal: Array.isArray(parsed && parsed.personal) ? parsed.personal : []
-            };
-            if (parsed && (parsed.activeTab === "work" || parsed.activeTab === "personal")) {
-              activeTab = parsed.activeTab;
-            }
-            if (ensureEddie(lists.work)) save();
-            return;
-          }
-
-          var legacy = migrateFromV1();
-          if (legacy) {
-            lists = { work: legacy, personal: [] };
-            ensureEddie(lists.work);
-            save();
-            return;
-          }
-
-          lists = {
-            work: SEED_WORK.map(function (text) {
-              return { id: uid(), text: text, done: false, createdAt: Date.now() };
-            }),
-            personal: []
+      function migrateLegacy() {
+        var v2 = readJson(STORAGE_V2);
+        if (v2 && typeof v2 === "object") {
+          var out = [];
+          ["work", "personal"].forEach(function (list) {
+            var arr = Array.isArray(v2[list]) ? v2[list] : [];
+            arr.forEach(function (item) {
+              var n = normalizeTodo(item, list);
+              if (n) {
+                n.updatedAt = nowIso();
+                out.push(n);
+              }
+            });
+          });
+          return {
+            todos: out,
+            tombstones: {},
+            activeTab: isList(v2.activeTab) ? v2.activeTab : "work"
           };
-          save();
-        } catch (e) {
-          lists = { work: [], personal: [] };
         }
+        var v1 = readJson(STORAGE_V1);
+        if (Array.isArray(v1)) {
+          return {
+            todos: v1.map(function (item) {
+              var n = normalizeTodo(item, "work");
+              if (n) n.updatedAt = nowIso();
+              return n;
+            }).filter(Boolean),
+            tombstones: {},
+            activeTab: "work"
+          };
+        }
+        return null;
       }
 
-      function save() {
-        localStorage.setItem(STORAGE_V2, JSON.stringify({
-          work: lists.work,
-          personal: lists.personal,
-          activeTab: activeTab
-        }));
+      function loadLocal() {
+        var v3 = readJson(STORAGE_V3);
+        if (v3 && Array.isArray(v3.todos)) {
+          state.todos = v3.todos.map(function (item) { return normalizeTodo(item, "work"); }).filter(Boolean);
+          state.tombstones = v3.tombstones && typeof v3.tombstones === "object" ? v3.tombstones : {};
+          state.activeTab = isList(v3.activeTab) ? v3.activeTab : "work";
+          return;
+        }
+        var legacy = migrateLegacy();
+        if (legacy) {
+          state.todos = legacy.todos;
+          state.tombstones = legacy.tombstones;
+          state.activeTab = legacy.activeTab;
+          save();
+          return;
+        }
+        state.todos = [];
+        state.tombstones = {};
+        state.activeTab = "work";
+      }
+
+      function mergeRemote(doc) {
+        if (!doc || !Array.isArray(doc.todos)) return 0;
+        var added = 0;
+        var changed = 0;
+        doc.todos.forEach(function (raw) {
+          var remote = normalizeTodo(raw, "work");
+          if (!remote) return;
+          var tombAt = state.tombstones[remote.id];
+          if (tombAt && parseTime(tombAt) >= parseTime(remote.updatedAt)) return;
+
+          var idx = findIndex(remote.id);
+          if (idx === -1) {
+            var key = remote.list + "|" + normText(remote.text);
+            for (var i = 0; i < state.todos.length; i++) {
+              var cur = state.todos[i];
+              if (cur.list + "|" + normText(cur.text) === key) { idx = i; break; }
+            }
+          }
+
+          if (idx === -1) {
+            if (state.tombstones[remote.id]) delete state.tombstones[remote.id];
+            state.todos.push(remote);
+            added++;
+            return;
+          }
+
+          var local = state.todos[idx];
+          var localTomb = state.tombstones[local.id];
+          if (local.id !== remote.id && localTomb && parseTime(localTomb) >= parseTime(remote.updatedAt)) return;
+
+          if (parseTime(remote.updatedAt) >= parseTime(local.updatedAt)) {
+            state.todos[idx] = remote;
+            if (state.tombstones[remote.id]) delete state.tombstones[remote.id];
+            if (local.id !== remote.id && state.tombstones[local.id]) delete state.tombstones[local.id];
+            changed++;
+          } else if (local.id !== remote.id) {
+            if (state.tombstones[local.id]) {
+              state.tombstones[remote.id] = state.tombstones[local.id];
+              delete state.tombstones[local.id];
+            }
+            local.id = remote.id;
+            changed++;
+          }
+        });
+        return added + changed;
+      }
+
+      function canonicalDoc() {
+        var newest = "";
+        state.todos.forEach(function (t) {
+          if (t.updatedAt > newest) newest = t.updatedAt;
+        });
+        return {
+          schemaVersion: 1,
+          updatedAt: newest || nowIso(),
+          todos: state.todos.map(function (t) {
+            return {
+              id: t.id,
+              text: t.text,
+              list: t.list,
+              status: t.status,
+              updatedAt: t.updatedAt,
+              notes: t.notes || ""
+            };
+          })
+        };
+      }
+
+      function setSync(msg) { syncLine.textContent = msg; }
+
+      function fetchRemote() {
+        var url = "./todos.json?t=" + Date.now();
+        return fetch(url, { cache: "no-store" }).then(function (res) {
+          if (!res.ok) throw new Error("status " + res.status);
+          return res.json();
+        });
       }
 
       function openCount() {
-        return todos().filter(function (t) { return !t.done; }).length;
+        return todosInTab().filter(function (t) { return t.status !== "completed"; }).length;
       }
 
       function visibleTodos() {
-        var all = todos();
-        if (filter === "open") return all.filter(function (t) { return !t.done; });
-        if (filter === "done") return all.filter(function (t) { return t.done; });
+        var all = todosInTab();
+        if (STATUSES.indexOf(filter) !== -1) {
+          return all.filter(function (t) { return t.status === filter; });
+        }
         return all.slice();
       }
 
@@ -638,21 +505,39 @@
           .replace(/"/g, "&quot;");
       }
 
+      function statusOptions(current) {
+        return STATUSES.map(function (s) {
+          return '<option value="' + s + '"' + (s === current ? " selected" : "") + ">" + STATUS_LABEL[s] + "</option>";
+        }).join("");
+      }
+
+      function checkMark(status) {
+        if (status === "completed") {
+          return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+        }
+        if (status === "in_progress") {
+          return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="6" y1="12" x2="18" y2="12"></line></svg>';
+        }
+        if (status === "needs_input") {
+          return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M9 9a3 3 0 1 1 4 2.8c-.8.4-1 1-1 2"></path><line x1="12" y1="18" x2="12" y2="18.01"></line></svg>';
+        }
+        return '<svg viewBox="0 0 24 24"></svg>';
+      }
+
       function updateTabUI() {
         document.querySelectorAll(".tab-btn").forEach(function (btn) {
-          var on = btn.getAttribute("data-tab") === activeTab;
+          var on = btn.getAttribute("data-tab") === state.activeTab;
           btn.classList.toggle("active", on);
           btn.setAttribute("aria-selected", on ? "true" : "false");
         });
-        var label = activeTab === "work" ? "Work" : "Personal";
+        var label = state.activeTab === "work" ? "Work" : "Personal";
         newTodoInput.placeholder = "Add to " + label + "…";
       }
 
       function setTab(tab) {
-        if (tab !== "work" && tab !== "personal") return;
-        if (activeTab === tab) return;
+        if (!isList(tab) || state.activeTab === tab) return;
         editingId = null;
-        activeTab = tab;
+        state.activeTab = tab;
         save();
         updateTabUI();
         render();
@@ -661,16 +546,12 @@
       function render() {
         openCountEl.textContent = String(openCount());
         var items = visibleTodos();
-        var tabLabel = activeTab === "work" ? "Work" : "Personal";
+        var tabLabel = state.activeTab === "work" ? "Work" : "Personal";
 
         if (items.length === 0) {
-          var msg = filter === "done"
-            ? "No completed " + tabLabel.toLowerCase() + " tasks yet."
-            : filter === "open"
-              ? "All clear — nothing open in " + tabLabel + "."
-              : tabLabel === "Personal"
-                ? "No personal tasks yet. Add one below."
-                : "No work tasks yet. Add one below.";
+          var msg = filter === "all"
+            ? (tabLabel === "Personal" ? "No personal tasks yet. Add one below." : "No work tasks yet. Add one below.")
+            : "Nothing " + STATUS_LABEL[filter].toLowerCase() + " in " + tabLabel + ".";
           listEl.innerHTML = '<li class="empty">' + msg + "</li>";
           return;
         }
@@ -678,22 +559,30 @@
         listEl.innerHTML = items.map(function (t) {
           var isEditing = editingId === t.id;
           var body = isEditing
-            ? '<input class="todo-edit" data-id="' + t.id + '" value="' + escapeHtml(t.text) + '" aria-label="Edit task" />'
-            : '<div class="todo-text" data-id="' + t.id + '" tabindex="0" role="button" title="Tap to edit">' + escapeHtml(t.text) + "</div>";
+            ? '<input class="todo-edit" data-id="' + escapeHtml(t.id) + '" value="' + escapeHtml(t.text) + '" aria-label="Edit task" />' +
+              '<textarea class="todo-notes-edit" data-id="' + escapeHtml(t.id) + '" aria-label="Notes" placeholder="Notes (optional)">' + escapeHtml(t.notes || "") + "</textarea>"
+            : '<div class="todo-text" data-id="' + escapeHtml(t.id) + '" tabindex="0" role="button" title="Tap to edit">' + escapeHtml(t.text) + "</div>" +
+              (t.notes ? '<div class="todo-notes">' + escapeHtml(t.notes) + "</div>" : "");
 
+          var checkLabel = t.status === "completed" ? "Mark not started" : "Mark completed";
           return (
-            '<li class="todo' + (t.done ? " done" : "") + '" data-id="' + t.id + '">' +
-              '<button type="button" class="check" data-action="toggle" data-id="' + t.id + '" aria-label="' + (t.done ? "Mark incomplete" : "Mark complete") + '" aria-pressed="' + t.done + '">' +
-                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>' +
+            '<li class="todo ' + t.status + '" data-id="' + escapeHtml(t.id) + '">' +
+              '<button type="button" class="check" data-action="toggle" data-id="' + escapeHtml(t.id) + '" aria-label="' + checkLabel + '">' +
+                checkMark(t.status) +
               "</button>" +
               '<div class="todo-body">' + body + "</div>" +
-              '<div class="actions">' +
-                '<button type="button" class="icon-btn" data-action="edit" data-id="' + t.id + '" aria-label="Edit" title="Edit">' +
-                  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>' +
-                "</button>" +
-                '<button type="button" class="icon-btn delete" data-action="delete" data-id="' + t.id + '" aria-label="Delete" title="Delete">' +
-                  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>' +
-                "</button>" +
+              '<div class="todo-side">' +
+                '<select class="status-select" data-action="status" data-id="' + escapeHtml(t.id) + '" aria-label="Status">' +
+                  statusOptions(t.status) +
+                "</select>" +
+                '<div class="actions">' +
+                  '<button type="button" class="icon-btn" data-action="edit" data-id="' + escapeHtml(t.id) + '" aria-label="Edit" title="Edit">' +
+                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>' +
+                  "</button>" +
+                  '<button type="button" class="icon-btn delete" data-action="delete" data-id="' + escapeHtml(t.id) + '" aria-label="Delete" title="Delete">' +
+                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>' +
+                  "</button>" +
+                "</div>" +
               "</div>" +
             "</li>"
           );
@@ -711,23 +600,42 @@
       function addTodo(text) {
         var trimmed = text.trim();
         if (!trimmed) return;
-        var next = todos().slice();
-        next.unshift({ id: uid(), text: trimmed, done: false, createdAt: Date.now() });
-        setTodos(next);
+        state.todos.unshift({
+          id: uid(),
+          text: trimmed,
+          list: state.activeTab,
+          status: "not_started",
+          updatedAt: nowIso(),
+          notes: ""
+        });
+        save();
+        render();
+      }
+
+      function setStatus(id, status) {
+        if (STATUSES.indexOf(status) === -1) return;
+        var t = state.todos[findIndex(id)];
+        if (!t || t.status === status) return;
+        t.status = status;
+        t.updatedAt = nowIso();
         save();
         render();
       }
 
       function toggleTodo(id) {
-        var t = todos().find(function (x) { return x.id === id; });
+        var t = state.todos[findIndex(id)];
         if (!t) return;
-        t.done = !t.done;
+        t.status = t.status === "completed" ? "not_started" : "completed";
+        t.updatedAt = nowIso();
         save();
         render();
       }
 
       function deleteTodo(id) {
-        setTodos(todos().filter(function (x) { return x.id !== id; }));
+        var idx = findIndex(id);
+        if (idx === -1) return;
+        state.tombstones[id] = nowIso();
+        state.todos.splice(idx, 1);
         if (editingId === id) editingId = null;
         save();
         render();
@@ -738,26 +646,51 @@
         render();
       }
 
-      function commitEdit(id, value) {
-        var t = todos().find(function (x) { return x.id === id; });
+      function commitEdit(id, text, notes) {
+        var t = state.todos[findIndex(id)];
         editingId = null;
         if (!t) { render(); return; }
-        var trimmed = value.trim();
+        var trimmed = String(text || "").trim();
         if (!trimmed) {
           deleteTodo(id);
           return;
         }
-        t.text = trimmed;
-        save();
+        var nextNotes = String(notes || "");
+        if (t.text !== trimmed || (t.notes || "") !== nextNotes) {
+          t.text = trimmed;
+          t.notes = nextNotes;
+          t.updatedAt = nowIso();
+          save();
+        }
         render();
       }
 
       function clearCompleted() {
-        var before = todos().length;
-        setTodos(todos().filter(function (t) { return !t.done; }));
-        if (todos().length === before) return;
+        var before = state.todos.length;
+        var stamp = nowIso();
+        state.todos = state.todos.filter(function (t) {
+          if (t.list === state.activeTab && t.status === "completed") {
+            state.tombstones[t.id] = stamp;
+            return false;
+          }
+          return true;
+        });
+        if (state.todos.length === before) return;
         save();
         render();
+      }
+
+      function copyJson() {
+        var text = JSON.stringify(canonicalDoc(), null, 2);
+        function done(ok) {
+          copyBtn.textContent = ok ? "Copied" : "Copy failed";
+          setTimeout(function () { copyBtn.textContent = "Copy JSON"; }, 1400);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
+          return;
+        }
+        done(false);
       }
 
       addForm.addEventListener("submit", function (e) {
@@ -768,11 +701,10 @@
       });
 
       clearBtn.addEventListener("click", clearCompleted);
+      copyBtn.addEventListener("click", copyJson);
 
       document.querySelectorAll(".tab-btn").forEach(function (btn) {
-        btn.addEventListener("click", function () {
-          setTab(btn.getAttribute("data-tab"));
-        });
+        btn.addEventListener("click", function () { setTab(btn.getAttribute("data-tab")); });
       });
 
       document.querySelectorAll(".filter-btn").forEach(function (btn) {
@@ -785,8 +717,15 @@
         });
       });
 
+      listEl.addEventListener("change", function (e) {
+        if (e.target.classList.contains("status-select")) {
+          setStatus(e.target.getAttribute("data-id"), e.target.value);
+        }
+      });
+
       listEl.addEventListener("click", function (e) {
         var actionEl = e.target.closest("[data-action]");
+        if (actionEl && actionEl.classList.contains("status-select")) return;
         if (actionEl) {
           var action = actionEl.getAttribute("data-action");
           var id = actionEl.getAttribute("data-id");
@@ -804,30 +743,43 @@
           e.preventDefault();
           startEdit(e.target.getAttribute("data-id"));
         }
-        if (e.target.classList.contains("todo-edit")) {
-          if (e.key === "Enter") {
-            e.preventDefault();
-            commitEdit(e.target.getAttribute("data-id"), e.target.value);
-          } else if (e.key === "Escape") {
-            editingId = null;
-            render();
-          }
+        if (e.target.classList.contains("todo-edit") && e.key === "Enter") {
+          e.preventDefault();
+          var li = e.target.closest(".todo");
+          var notesEl = li.querySelector(".todo-notes-edit");
+          commitEdit(e.target.getAttribute("data-id"), e.target.value, notesEl ? notesEl.value : "");
+        } else if ((e.target.classList.contains("todo-edit") || e.target.classList.contains("todo-notes-edit")) && e.key === "Escape") {
+          editingId = null;
+          render();
         }
       });
 
       listEl.addEventListener("focusout", function (e) {
-        if (e.target.classList.contains("todo-edit")) {
-          var id = e.target.getAttribute("data-id");
-          var value = e.target.value;
-          setTimeout(function () {
-            if (editingId === id) commitEdit(id, value);
-          }, 0);
-        }
+        if (!e.target.classList.contains("todo-edit") && !e.target.classList.contains("todo-notes-edit")) return;
+        var li = e.target.closest(".todo");
+        var id = e.target.getAttribute("data-id");
+        var textEl = li.querySelector(".todo-edit");
+        var notesEl = li.querySelector(".todo-notes-edit");
+        var text = textEl ? textEl.value : "";
+        var notes = notesEl ? notesEl.value : "";
+        setTimeout(function () {
+          if (editingId === id && !li.contains(document.activeElement)) commitEdit(id, text, notes);
+        }, 0);
       });
 
-      load();
+      loadLocal();
       updateTabUI();
       render();
+
+      fetchRemote().then(function (doc) {
+        var n = mergeRemote(doc);
+        save();
+        render();
+        var when = doc && doc.updatedAt ? doc.updatedAt : "";
+        setSync(n ? "Merged shared list" + (when ? " (" + when + ")" : "") : "Shared list is up to date");
+      }).catch(function () {
+        setSync(state.todos.length ? "Offline — showing this device" : "Could not load shared list");
+      });
 
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", function () {

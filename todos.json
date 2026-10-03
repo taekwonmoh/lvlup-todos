@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-10-03T15:53:00.000Z",
+  "todos": [
+    {
+      "id": "work-invite-parents-oct19",
+      "text": "Invite parents to start week of October 19th",
+      "list": "work",
+      "status": "not_started",
+      "updatedAt": "2026-10-03T15:53:00.000Z",
+      "notes": ""
+    },
+    {
+      "id": "work-silver-kickers",
+      "text": "Silver Kickers — 40+ workout and mixer",
+      "list": "work",
+      "status": "not_started",
+      "updatedAt": "2026-10-03T15:53:00.000Z",
+      "notes": ""
+    },
+    {
+      "id": "work-holiday-shirt-designs",
+      "text": "2 more designs for shirts and hoodies in time for holiday sale",
+      "list": "work",
+      "status": "not_started",
+      "updatedAt": "2026-10-03T15:53:00.000Z",
+      "notes": ""
+    },
+    {
+      "id": "work-cert-cycle-collars",
+      "text": "Make each level of certification last one cycle — may need intermediary levels between the 3 collars",
+      "list": "work",
+      "status": "not_started",
+      "updatedAt": "2026-10-03T15:53:00.000Z",
+      "notes": ""
+    },
+    {
+      "id": "work-lvlup-pens",
+      "text": "Order LVLUP branded pens",
+      "list": "work",
+      "status": "not_started",
+      "updatedAt": "2026-10-03T15:53:00.000Z",
+      "notes": ""
+    },
+    {
+      "id": "work-booth-donate-uniform",
+      "text": "Booths — donate $20 and we will give you a free uniform and a month as a thank you",
+      "list": "work",
+      "status": "not_started",
+      "updatedAt": "2026-10-03T15:53:00.000Z",
+      "notes": ""
+    },
+    {
+      "id": "work-eddie-cha-black-belt",
+      "text": "Post Eddie Cha photo and tease update to black belt curriculum",
+      "list": "work",
+      "status": "not_started",
+      "updatedAt": "2026-10-03T15:53:00.000Z",
+      "notes": ""
+    }
+  ]
+}
