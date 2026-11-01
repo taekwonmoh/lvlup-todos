@@ -1,0 +1,14 @@
+name = "moh-todos"
+main = "worker/index.js"
+compatibility_date = "2026-10-15"
+workers_dev = true
+
+# One Durable Object holds the whole list. Requests are serialized and the
+# write is visible to the phone and the laptop on the next poll.
+[[durable_objects.bindings]]
+name = "TODO_LIST"
+class_name = "TodoList"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["TodoList"]

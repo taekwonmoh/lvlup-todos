@@ -3,3 +3,4 @@ Source: https://github.com/taekwonmoh/lvlup-todos
 GitHub Pages: branch main, folder / (root)
 iPhone: open URL in Safari → Share → Add to Home Screen.
 Android: browser menu → Install / Add to Home screen.
+Two-way sync (one-time): SETUP.md. How bots update the list: SYNC.md.

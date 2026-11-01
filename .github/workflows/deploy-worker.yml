@@ -1,0 +1,100 @@
+name: Deploy sync worker
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - worker/**
+      - lib/**
+      - wrangler.toml
+      - package.json
+      - package-lock.json
+      - .github/workflows/deploy-worker.yml
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Check secrets
+        id: gate
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          SYNC_PASSPHRASE: ${{ secrets.SYNC_PASSPHRASE }}
+          SYNC_TOKEN: ${{ secrets.SYNC_TOKEN }}
+        run: |
+          missing=0
+          for name in CLOUDFLARE_API_TOKEN CLOUDFLARE_ACCOUNT_ID SYNC_PASSPHRASE SYNC_TOKEN; do
+            eval "val=\${$name}"
+            if [ -z "$val" ]; then
+              echo "Missing GitHub secret: $name"
+              missing=1
+            fi
+          done
+          if [ "$missing" = "1" ]; then
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "Deploy skipped. Add the four secrets from SETUP.md, then run this workflow again."
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Deploy
+        id: deploy
+        if: steps.gate.outputs.ready == 'true'
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          SYNC_PASSPHRASE: ${{ secrets.SYNC_PASSPHRASE }}
+          SYNC_TOKEN: ${{ secrets.SYNC_TOKEN }}
+        run: |
+          set -euo pipefail
+          tmp="$(mktemp)"
+          trap 'rm -f "$tmp"' EXIT
+          node --input-type=module -e 'import { writeFileSync } from "node:fs"; writeFileSync(process.argv[1], JSON.stringify({ SYNC_PASSPHRASE: process.env.SYNC_PASSPHRASE, SYNC_TOKEN: process.env.SYNC_TOKEN }));' "$tmp"
+          npx wrangler deploy --secrets-file "$tmp" | tee /tmp/wrangler-deploy.txt
+          url="$(grep -Eo 'https://moh-todos\.[A-Za-z0-9.-]+\.workers\.dev' /tmp/wrangler-deploy.txt | head -1 || true)"
+          if [ -z "$url" ]; then
+            sub="$(curl -fsS -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+              "https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/workers/subdomain" \
+              | node -e 'let s="";process.stdin.on("data",d=>s+=d);process.stdin.on("end",()=>{const j=JSON.parse(s); if(!j.success) process.exit(1); process.stdout.write(j.result.subdomain||"")})')"
+            url="https://moh-todos.${sub}.workers.dev"
+          fi
+          echo "Worker URL: $url"
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+          ok=0
+          for _ in 1 2 3 4 5 6; do
+            if curl -fsS "$url/health" | grep -q '"configured":true'; then
+              ok=1
+              break
+            fi
+            sleep 3
+          done
+          if [ "$ok" != "1" ]; then
+            echo "Worker health check did not report configured=true."
+            exit 1
+          fi
+          curl -fsS -H "Authorization: Bearer ${SYNC_TOKEN}" "$url/v1/meta"
+          echo
+          node --input-type=module -e 'import { readFileSync, writeFileSync } from "node:fs"; const url = process.argv[1]; const cur = JSON.parse(readFileSync("sync-config.json","utf8")); if ((cur.workerUrl||"") === url) { console.log("sync-config.json already has this URL."); process.exit(0); } writeFileSync("sync-config.json", JSON.stringify({ workerUrl: url }, null, 2) + "\n"); console.log("Updated sync-config.json");' "$url"
+      - name: Commit worker URL
+        if: steps.gate.outputs.ready == 'true'
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- sync-config.json; then
+            echo "No sync-config.json change."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add sync-config.json
+          git commit -m "Point the app at the sync worker"
+          git push origin HEAD:main

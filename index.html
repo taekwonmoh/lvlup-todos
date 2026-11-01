@@ -57,7 +57,10 @@
       min-height: 100dvh;
       overscroll-behavior-y: contain;
     }
-    .app { max-width: 560px; margin: 0 auto; width: 100%; }
+    .app {
+      max-width: 560px; margin: 0 auto; width: 100%;
+      padding-bottom: calc(var(--add-bar-h) + 28px);
+    }
     header { text-align: center; margin-bottom: 16px; padding: 4px 4px 0; }
     .badge {
       display: inline-flex; align-items: center; gap: 6px;
@@ -169,6 +172,7 @@
     footer {
       display: flex; justify-content: space-between; align-items: center; gap: 8px;
       padding: 10px 12px; border-top: 1px solid var(--border); background: var(--surface); flex-wrap: wrap;
+      scroll-margin-bottom: calc(var(--add-bar-h) + 16px);
     }
     .footer-hint { font-size: 0.72rem; color: var(--text-muted); line-height: 1.3; flex: 1; min-width: 140px; }
     .footer-actions { display: flex; gap: 4px; flex-wrap: wrap; }
@@ -203,6 +207,22 @@
     }
     .add-bar input::placeholder { color: var(--text-muted); opacity: 0.7; }
     .add-bar input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+    .sync-form {
+      display: flex; gap: 8px; margin-top: 10px; align-items: stretch;
+    }
+    .sync-form[hidden] { display: none; }
+    .sync-form input {
+      flex: 1; min-width: 0; background: var(--bg-input); border: 1px solid var(--border-soft);
+      border-radius: var(--radius-sm); color: var(--text); font-size: 16px;
+      padding: 10px 12px; outline: none; min-height: var(--tap);
+    }
+    .sync-form input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+    .sync-dismiss {
+      background: transparent; color: var(--text-muted); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); font-family: inherit; font-weight: 600;
+      min-height: var(--tap); padding: 0 12px; cursor: pointer;
+    }
+    .sync-dismiss:hover { color: var(--text); }
   </style>
 </head>
 <body>
@@ -212,6 +232,11 @@
       <h1>There's always Moh to do</h1>
       <p class="subtitle">Work &amp; personal</p>
       <p class="sync-line" id="syncLine" aria-live="polite">Loading shared list…</p>
+      <form id="syncForm" class="sync-form" hidden autocomplete="off">
+        <input type="password" id="syncPass" name="sync-passphrase" placeholder="Sync passphrase" aria-label="Sync passphrase" maxlength="200" autocomplete="current-password" />
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="button" class="sync-dismiss" id="syncDismiss">Not now</button>
+      </form>
     </header>
 
     <div class="tabs" role="tablist" aria-label="Lists">
@@ -234,10 +259,11 @@
       <ul class="list" id="todoList" aria-live="polite"></ul>
 
       <footer>
-        <span class="footer-hint">Tap text to edit. Status is per task. Shared list merges on open.</span>
+        <span class="footer-hint">Tap text to edit. Status is per task. Edits sync to your other device.</span>
         <div class="footer-actions">
           <button type="button" class="btn btn-ghost" id="copyJson">Copy JSON</button>
           <button type="button" class="btn btn-ghost" id="clearCompleted">Clear completed</button>
+          <button type="button" class="btn btn-ghost" id="syncSetup">Passphrase</button>
         </div>
       </footer>
     </div>
@@ -250,543 +276,6 @@
     </div>
   </form>
 
-  <script>
-    (function () {
-      var STORAGE_V3 = "moh-todos-v3";
-      var STORAGE_V2 = "moh-todos-v2";
-      var STORAGE_V1 = "lvlup-todos-v1";
-      var STATUSES = ["not_started", "in_progress", "needs_input", "completed"];
-      var STATUS_LABEL = {
-        not_started: "Not started",
-        in_progress: "In progress",
-        needs_input: "Needs input",
-        completed: "Completed"
-      };
-
-      var state = { todos: [], tombstones: {}, activeTab: "work" };
-      var filter = "all";
-      var editingId = null;
-
-      var listEl = document.getElementById("todoList");
-      var openCountEl = document.getElementById("openCount");
-      var addForm = document.getElementById("addForm");
-      var newTodoInput = document.getElementById("newTodo");
-      var clearBtn = document.getElementById("clearCompleted");
-      var copyBtn = document.getElementById("copyJson");
-      var syncLine = document.getElementById("syncLine");
-
-      function uid() {
-        return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
-      }
-
-      function nowIso() {
-        return new Date().toISOString();
-      }
-
-      function parseTime(iso) {
-        var n = Date.parse(iso || "");
-        return isNaN(n) ? 0 : n;
-      }
-
-      function normText(s) {
-        return String(s || "").trim().toLowerCase().replace(/\s+/g, " ");
-      }
-
-      function isList(v) {
-        return v === "work" || v === "personal";
-      }
-
-      function statusOf(raw) {
-        if (raw && STATUSES.indexOf(raw.status) !== -1) return raw.status;
-        if (raw && raw.done === true) return "completed";
-        return "not_started";
-      }
-
-      function normalizeTodo(raw, fallbackList) {
-        if (!raw || typeof raw !== "object") return null;
-        var text = typeof raw.text === "string" ? raw.text.trim() : "";
-        if (!text) return null;
-        var list = isList(raw.list) ? raw.list : (isList(fallbackList) ? fallbackList : "work");
-        var updatedAt = typeof raw.updatedAt === "string" && parseTime(raw.updatedAt)
-          ? new Date(parseTime(raw.updatedAt)).toISOString()
-          : (typeof raw.createdAt === "number" ? new Date(raw.createdAt).toISOString() : nowIso());
-        var notes = typeof raw.notes === "string" ? raw.notes : "";
-        var id = typeof raw.id === "string" && raw.id ? raw.id : uid();
-        return {
-          id: id,
-          text: text,
-          list: list,
-          status: statusOf(raw),
-          updatedAt: updatedAt,
-          notes: notes
-        };
-      }
-
-      function todosInTab() {
-        return state.todos.filter(function (t) { return t.list === state.activeTab; });
-      }
-
-      function findIndex(id) {
-        for (var i = 0; i < state.todos.length; i++) {
-          if (state.todos[i].id === id) return i;
-        }
-        return -1;
-      }
-
-      function save() {
-        localStorage.setItem(STORAGE_V3, JSON.stringify({
-          todos: state.todos,
-          tombstones: state.tombstones,
-          activeTab: state.activeTab
-        }));
-      }
-
-      function readJson(key) {
-        try {
-          var raw = localStorage.getItem(key);
-          if (raw === null) return null;
-          return JSON.parse(raw);
-        } catch (e) {
-          return null;
-        }
-      }
-
-      function migrateLegacy() {
-        var v2 = readJson(STORAGE_V2);
-        if (v2 && typeof v2 === "object") {
-          var out = [];
-          ["work", "personal"].forEach(function (list) {
-            var arr = Array.isArray(v2[list]) ? v2[list] : [];
-            arr.forEach(function (item) {
-              var n = normalizeTodo(item, list);
-              if (n) {
-                n.updatedAt = nowIso();
-                out.push(n);
-              }
-            });
-          });
-          return {
-            todos: out,
-            tombstones: {},
-            activeTab: isList(v2.activeTab) ? v2.activeTab : "work"
-          };
-        }
-        var v1 = readJson(STORAGE_V1);
-        if (Array.isArray(v1)) {
-          return {
-            todos: v1.map(function (item) {
-              var n = normalizeTodo(item, "work");
-              if (n) n.updatedAt = nowIso();
-              return n;
-            }).filter(Boolean),
-            tombstones: {},
-            activeTab: "work"
-          };
-        }
-        return null;
-      }
-
-      function loadLocal() {
-        var v3 = readJson(STORAGE_V3);
-        if (v3 && Array.isArray(v3.todos)) {
-          state.todos = v3.todos.map(function (item) { return normalizeTodo(item, "work"); }).filter(Boolean);
-          state.tombstones = v3.tombstones && typeof v3.tombstones === "object" ? v3.tombstones : {};
-          state.activeTab = isList(v3.activeTab) ? v3.activeTab : "work";
-          return;
-        }
-        var legacy = migrateLegacy();
-        if (legacy) {
-          state.todos = legacy.todos;
-          state.tombstones = legacy.tombstones;
-          state.activeTab = legacy.activeTab;
-          save();
-          return;
-        }
-        state.todos = [];
-        state.tombstones = {};
-        state.activeTab = "work";
-      }
-
-      function mergeRemote(doc) {
-        if (!doc || !Array.isArray(doc.todos)) return 0;
-        var added = 0;
-        var changed = 0;
-        doc.todos.forEach(function (raw) {
-          var remote = normalizeTodo(raw, "work");
-          if (!remote) return;
-          var tombAt = state.tombstones[remote.id];
-          if (tombAt && parseTime(tombAt) >= parseTime(remote.updatedAt)) return;
-
-          var idx = findIndex(remote.id);
-          if (idx === -1) {
-            var key = remote.list + "|" + normText(remote.text);
-            for (var i = 0; i < state.todos.length; i++) {
-              var cur = state.todos[i];
-              if (cur.list + "|" + normText(cur.text) === key) { idx = i; break; }
-            }
-          }
-
-          if (idx === -1) {
-            if (state.tombstones[remote.id]) delete state.tombstones[remote.id];
-            state.todos.push(remote);
-            added++;
-            return;
-          }
-
-          var local = state.todos[idx];
-          var localTomb = state.tombstones[local.id];
-          if (local.id !== remote.id && localTomb && parseTime(localTomb) >= parseTime(remote.updatedAt)) return;
-
-          if (parseTime(remote.updatedAt) >= parseTime(local.updatedAt)) {
-            state.todos[idx] = remote;
-            if (state.tombstones[remote.id]) delete state.tombstones[remote.id];
-            if (local.id !== remote.id && state.tombstones[local.id]) delete state.tombstones[local.id];
-            changed++;
-          } else if (local.id !== remote.id) {
-            if (state.tombstones[local.id]) {
-              state.tombstones[remote.id] = state.tombstones[local.id];
-              delete state.tombstones[local.id];
-            }
-            local.id = remote.id;
-            changed++;
-          }
-        });
-        return added + changed;
-      }
-
-      function canonicalDoc() {
-        var newest = "";
-        state.todos.forEach(function (t) {
-          if (t.updatedAt > newest) newest = t.updatedAt;
-        });
-        return {
-          schemaVersion: 1,
-          updatedAt: newest || nowIso(),
-          todos: state.todos.map(function (t) {
-            return {
-              id: t.id,
-              text: t.text,
-              list: t.list,
-              status: t.status,
-              updatedAt: t.updatedAt,
-              notes: t.notes || ""
-            };
-          })
-        };
-      }
-
-      function setSync(msg) { syncLine.textContent = msg; }
-
-      function fetchRemote() {
-        var url = "./todos.json?t=" + Date.now();
-        return fetch(url, { cache: "no-store" }).then(function (res) {
-          if (!res.ok) throw new Error("status " + res.status);
-          return res.json();
-        });
-      }
-
-      function openCount() {
-        return todosInTab().filter(function (t) { return t.status !== "completed"; }).length;
-      }
-
-      function visibleTodos() {
-        var all = todosInTab();
-        if (STATUSES.indexOf(filter) !== -1) {
-          return all.filter(function (t) { return t.status === filter; });
-        }
-        return all.slice();
-      }
-
-      function escapeHtml(str) {
-        return String(str)
-          .replace(/&/g, "&amp;")
-          .replace(/</g, "&lt;")
-          .replace(/>/g, "&gt;")
-          .replace(/"/g, "&quot;");
-      }
-
-      function statusOptions(current) {
-        return STATUSES.map(function (s) {
-          return '<option value="' + s + '"' + (s === current ? " selected" : "") + ">" + STATUS_LABEL[s] + "</option>";
-        }).join("");
-      }
-
-      function checkMark(status) {
-        if (status === "completed") {
-          return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
-        }
-        if (status === "in_progress") {
-          return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="6" y1="12" x2="18" y2="12"></line></svg>';
-        }
-        if (status === "needs_input") {
-          return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M9 9a3 3 0 1 1 4 2.8c-.8.4-1 1-1 2"></path><line x1="12" y1="18" x2="12" y2="18.01"></line></svg>';
-        }
-        return '<svg viewBox="0 0 24 24"></svg>';
-      }
-
-      function updateTabUI() {
-        document.querySelectorAll(".tab-btn").forEach(function (btn) {
-          var on = btn.getAttribute("data-tab") === state.activeTab;
-          btn.classList.toggle("active", on);
-          btn.setAttribute("aria-selected", on ? "true" : "false");
-        });
-        var label = state.activeTab === "work" ? "Work" : "Personal";
-        newTodoInput.placeholder = "Add to " + label + "…";
-      }
-
-      function setTab(tab) {
-        if (!isList(tab) || state.activeTab === tab) return;
-        editingId = null;
-        state.activeTab = tab;
-        save();
-        updateTabUI();
-        render();
-      }
-
-      function render() {
-        openCountEl.textContent = String(openCount());
-        var items = visibleTodos();
-        var tabLabel = state.activeTab === "work" ? "Work" : "Personal";
-
-        if (items.length === 0) {
-          var msg = filter === "all"
-            ? (tabLabel === "Personal" ? "No personal tasks yet. Add one below." : "No work tasks yet. Add one below.")
-            : "Nothing " + STATUS_LABEL[filter].toLowerCase() + " in " + tabLabel + ".";
-          listEl.innerHTML = '<li class="empty">' + msg + "</li>";
-          return;
-        }
-
-        listEl.innerHTML = items.map(function (t) {
-          var isEditing = editingId === t.id;
-          var body = isEditing
-            ? '<input class="todo-edit" data-id="' + escapeHtml(t.id) + '" value="' + escapeHtml(t.text) + '" aria-label="Edit task" />' +
-              '<textarea class="todo-notes-edit" data-id="' + escapeHtml(t.id) + '" aria-label="Notes" placeholder="Notes (optional)">' + escapeHtml(t.notes || "") + "</textarea>"
-            : '<div class="todo-text" data-id="' + escapeHtml(t.id) + '" tabindex="0" role="button" title="Tap to edit">' + escapeHtml(t.text) + "</div>" +
-              (t.notes ? '<div class="todo-notes">' + escapeHtml(t.notes) + "</div>" : "");
-
-          var checkLabel = t.status === "completed" ? "Mark not started" : "Mark completed";
-          return (
-            '<li class="todo ' + t.status + '" data-id="' + escapeHtml(t.id) + '">' +
-              '<button type="button" class="check" data-action="toggle" data-id="' + escapeHtml(t.id) + '" aria-label="' + checkLabel + '">' +
-                checkMark(t.status) +
-              "</button>" +
-              '<div class="todo-body">' + body + "</div>" +
-              '<div class="todo-side">' +
-                '<select class="status-select" data-action="status" data-id="' + escapeHtml(t.id) + '" aria-label="Status">' +
-                  statusOptions(t.status) +
-                "</select>" +
-                '<div class="actions">' +
-                  '<button type="button" class="icon-btn" data-action="edit" data-id="' + escapeHtml(t.id) + '" aria-label="Edit" title="Edit">' +
-                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>' +
-                  "</button>" +
-                  '<button type="button" class="icon-btn delete" data-action="delete" data-id="' + escapeHtml(t.id) + '" aria-label="Delete" title="Delete">' +
-                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>' +
-                  "</button>" +
-                "</div>" +
-              "</div>" +
-            "</li>"
-          );
-        }).join("");
-
-        if (editingId) {
-          var editInput = listEl.querySelector(".todo-edit");
-          if (editInput) {
-            editInput.focus();
-            editInput.setSelectionRange(editInput.value.length, editInput.value.length);
-          }
-        }
-      }
-
-      function addTodo(text) {
-        var trimmed = text.trim();
-        if (!trimmed) return;
-        state.todos.unshift({
-          id: uid(),
-          text: trimmed,
-          list: state.activeTab,
-          status: "not_started",
-          updatedAt: nowIso(),
-          notes: ""
-        });
-        save();
-        render();
-      }
-
-      function setStatus(id, status) {
-        if (STATUSES.indexOf(status) === -1) return;
-        var t = state.todos[findIndex(id)];
-        if (!t || t.status === status) return;
-        t.status = status;
-        t.updatedAt = nowIso();
-        save();
-        render();
-      }
-
-      function toggleTodo(id) {
-        var t = state.todos[findIndex(id)];
-        if (!t) return;
-        t.status = t.status === "completed" ? "not_started" : "completed";
-        t.updatedAt = nowIso();
-        save();
-        render();
-      }
-
-      function deleteTodo(id) {
-        var idx = findIndex(id);
-        if (idx === -1) return;
-        state.tombstones[id] = nowIso();
-        state.todos.splice(idx, 1);
-        if (editingId === id) editingId = null;
-        save();
-        render();
-      }
-
-      function startEdit(id) {
-        editingId = id;
-        render();
-      }
-
-      function commitEdit(id, text, notes) {
-        var t = state.todos[findIndex(id)];
-        editingId = null;
-        if (!t) { render(); return; }
-        var trimmed = String(text || "").trim();
-        if (!trimmed) {
-          deleteTodo(id);
-          return;
-        }
-        var nextNotes = String(notes || "");
-        if (t.text !== trimmed || (t.notes || "") !== nextNotes) {
-          t.text = trimmed;
-          t.notes = nextNotes;
-          t.updatedAt = nowIso();
-          save();
-        }
-        render();
-      }
-
-      function clearCompleted() {
-        var before = state.todos.length;
-        var stamp = nowIso();
-        state.todos = state.todos.filter(function (t) {
-          if (t.list === state.activeTab && t.status === "completed") {
-            state.tombstones[t.id] = stamp;
-            return false;
-          }
-          return true;
-        });
-        if (state.todos.length === before) return;
-        save();
-        render();
-      }
-
-      function copyJson() {
-        var text = JSON.stringify(canonicalDoc(), null, 2);
-        function done(ok) {
-          copyBtn.textContent = ok ? "Copied" : "Copy failed";
-          setTimeout(function () { copyBtn.textContent = "Copy JSON"; }, 1400);
-        }
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { done(false); });
-          return;
-        }
-        done(false);
-      }
-
-      addForm.addEventListener("submit", function (e) {
-        e.preventDefault();
-        addTodo(newTodoInput.value);
-        newTodoInput.value = "";
-        newTodoInput.blur();
-      });
-
-      clearBtn.addEventListener("click", clearCompleted);
-      copyBtn.addEventListener("click", copyJson);
-
-      document.querySelectorAll(".tab-btn").forEach(function (btn) {
-        btn.addEventListener("click", function () { setTab(btn.getAttribute("data-tab")); });
-      });
-
-      document.querySelectorAll(".filter-btn").forEach(function (btn) {
-        btn.addEventListener("click", function () {
-          filter = btn.getAttribute("data-filter");
-          document.querySelectorAll(".filter-btn").forEach(function (b) {
-            b.classList.toggle("active", b === btn);
-          });
-          render();
-        });
-      });
-
-      listEl.addEventListener("change", function (e) {
-        if (e.target.classList.contains("status-select")) {
-          setStatus(e.target.getAttribute("data-id"), e.target.value);
-        }
-      });
-
-      listEl.addEventListener("click", function (e) {
-        var actionEl = e.target.closest("[data-action]");
-        if (actionEl && actionEl.classList.contains("status-select")) return;
-        if (actionEl) {
-          var action = actionEl.getAttribute("data-action");
-          var id = actionEl.getAttribute("data-id");
-          if (action === "toggle") toggleTodo(id);
-          else if (action === "delete") deleteTodo(id);
-          else if (action === "edit") startEdit(id);
-          return;
-        }
-        var textEl = e.target.closest(".todo-text");
-        if (textEl) startEdit(textEl.getAttribute("data-id"));
-      });
-
-      listEl.addEventListener("keydown", function (e) {
-        if (e.target.classList.contains("todo-text") && (e.key === "Enter" || e.key === " ")) {
-          e.preventDefault();
-          startEdit(e.target.getAttribute("data-id"));
-        }
-        if (e.target.classList.contains("todo-edit") && e.key === "Enter") {
-          e.preventDefault();
-          var li = e.target.closest(".todo");
-          var notesEl = li.querySelector(".todo-notes-edit");
-          commitEdit(e.target.getAttribute("data-id"), e.target.value, notesEl ? notesEl.value : "");
-        } else if ((e.target.classList.contains("todo-edit") || e.target.classList.contains("todo-notes-edit")) && e.key === "Escape") {
-          editingId = null;
-          render();
-        }
-      });
-
-      listEl.addEventListener("focusout", function (e) {
-        if (!e.target.classList.contains("todo-edit") && !e.target.classList.contains("todo-notes-edit")) return;
-        var li = e.target.closest(".todo");
-        var id = e.target.getAttribute("data-id");
-        var textEl = li.querySelector(".todo-edit");
-        var notesEl = li.querySelector(".todo-notes-edit");
-        var text = textEl ? textEl.value : "";
-        var notes = notesEl ? notesEl.value : "";
-        setTimeout(function () {
-          if (editingId === id && !li.contains(document.activeElement)) commitEdit(id, text, notes);
-        }, 0);
-      });
-
-      loadLocal();
-      updateTabUI();
-      render();
-
-      fetchRemote().then(function (doc) {
-        var n = mergeRemote(doc);
-        save();
-        render();
-        var when = doc && doc.updatedAt ? doc.updatedAt : "";
-        setSync(n ? "Merged shared list" + (when ? " (" + when + ")" : "") : "Shared list is up to date");
-      }).catch(function () {
-        setSync(state.todos.length ? "Offline — showing this device" : "Could not load shared list");
-      });
-
-      if ("serviceWorker" in navigator) {
-        window.addEventListener("load", function () {
-          navigator.serviceWorker.register("./sw.js").catch(function () {});
-        });
-      }
-    })();
-  </script>
+  <script type="module" src="./app.js"></script>
 </body>
 </html>
