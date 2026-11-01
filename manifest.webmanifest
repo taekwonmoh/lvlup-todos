@@ -1,7 +1,7 @@
 {
   "name": "There's always Moh to do",
   "short_name": "Moh to do",
-  "description": "Work and personal to-dos — stays on this device",
+  "description": "Work and personal to-dos, synced across your devices",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

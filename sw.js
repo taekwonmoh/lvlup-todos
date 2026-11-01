@@ -1,17 +1,19 @@
 /* There's always Moh to do — offline cache */
-const CACHE = "moh-todos-ghpages-v3";
+const CACHE = "moh-todos-ghpages-v4";
 const ASSETS = [
   "./",
   "./index.html",
+  "./app.js",
+  "./lib/merge.js",
   "./manifest.json",
   "./icon-192.png",
   "./icon-512.png",
   "./apple-touch-icon.png"
 ];
 
-function isTodosJson(url) {
+function pathEnds(url, suffix) {
   try {
-    return new URL(url).pathname.endsWith("/todos.json");
+    return new URL(url).pathname.endsWith(suffix);
   } catch (e) {
     return false;
   }
@@ -34,16 +36,17 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
 
-  /* Canonical list: always try the network. Never let a stale precache win. */
-  if (isTodosJson(event.request.url)) {
+  /* List and sync URL: always try the network. Never let a stale precache win. */
+  if (pathEnds(event.request.url, "/todos.json") || pathEnds(event.request.url, "/sync-config.json")) {
+    const cacheKey = pathEnds(event.request.url, "/sync-config.json") ? "./sync-config.json" : "./todos.json";
     event.respondWith(
       fetch(event.request).then((response) => {
         if (response && response.ok) {
           const clone = response.clone();
-          caches.open(CACHE).then((cache) => cache.put("./todos.json", clone));
+          caches.open(CACHE).then((cache) => cache.put(cacheKey, clone));
         }
         return response;
-      }).catch(() => caches.match("./todos.json"))
+      }).catch(() => caches.match(cacheKey))
     );
     return;
   }
