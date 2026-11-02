@@ -1,7 +1,47 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-11-01T23:52:00.111Z",
+  "updatedAt": "2026-11-02T13:58:51.790Z",
   "todos": [
+    {
+      "id": "mvzbrdla975g5q",
+      "text": "Move all applications and cancels have most recent on top",
+      "list": "work",
+      "status": "not_started",
+      "updatedAt": "2026-11-02T13:58:51.790Z",
+      "notes": ""
+    },
+    {
+      "id": "mvyej0qvqucsal",
+      "text": "I want all of the paid holidays marked off in the LVLUP scheduler, alongside all the PTO days they have left. It should also say you can take time off (paid PTO), but you just won't be paid for those days. I also want to make sure that all of the policy handbooks and guidelines are in the dashboard for employee review at all times as well.",
+      "list": "work",
+      "status": "not_started",
+      "updatedAt": "2026-11-01T22:28:34.567Z",
+      "notes": ""
+    },
+    {
+      "id": "muvbskftcj5sl3",
+      "text": "One-on-one meeting with Joey: - Grievances - Body language - Attitude   In the clinic, I appreciate you being there, but you still need hours to fill, so technically you're still working. If you're complaining about being there all day doing lessons, that tells me that maybe we shouldn't be doing as many private lessons because it's taking away from your ability to have energy during your actual salaried hours.  Also, I'm getting very discouraged by the inability for you to follow directions on",
+      "list": "work",
+      "status": "not_started",
+      "updatedAt": "2026-10-05T14:09:00.281Z",
+      "notes": ""
+    },
+    {
+      "id": "mut2nxx16a0nvr",
+      "text": "We need signs in front of bathroom stalls and urinals.",
+      "list": "work",
+      "status": "not_started",
+      "updatedAt": "2026-10-04T00:17:55.573Z",
+      "notes": ""
+    },
+    {
+      "id": "musng9ppymkdgv",
+      "text": "Grant access to members LVLUP page to make.lvlupma@gmail.com",
+      "list": "work",
+      "status": "completed",
+      "updatedAt": "2026-11-02T13:58:33.490Z",
+      "notes": ""
+    },
     {
       "id": "work-invite-parents-oct19",
       "text": "Invite parents to start week of November 9th (re-aimed from Oct 19, Oct 26, then Nov 2)",
