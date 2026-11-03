@@ -1,13 +1,29 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-11-02T13:58:51.790Z",
+  "updatedAt": "2026-11-03T02:28:56.072Z",
   "todos": [
+    {
+      "id": "mw02jz48axpw4r",
+      "text": "See if I can print out time off requests for homebase",
+      "list": "work",
+      "status": "not_started",
+      "updatedAt": "2026-11-03T02:28:56.072Z",
+      "notes": ""
+    },
+    {
+      "id": "mw02jcb4cxeveu",
+      "text": "Update the LVLUP join pages",
+      "list": "work",
+      "status": "not_started",
+      "updatedAt": "2026-11-03T02:28:26.513Z",
+      "notes": ""
+    },
     {
       "id": "mvzbrdla975g5q",
       "text": "Move all applications and cancels have most recent on top",
       "list": "work",
-      "status": "not_started",
-      "updatedAt": "2026-11-02T13:58:51.790Z",
+      "status": "completed",
+      "updatedAt": "2026-11-03T02:27:31.197Z",
       "notes": ""
     },
     {
